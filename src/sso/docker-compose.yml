@@ -21,3 +21,16 @@ services:
       - .env.prod
     volumes:
       - ./pgsql/data:/var/postgresql/data
+  # Keycloack as single-sign on
+  keycloak:
+    image: bitnami/keycloak
+    container_name: keycloak
+    restart: unless-stopped
+    networks:
+      - custom
+    depends_on:
+      - pgsql
+    links:
+      - pgsql:postgresql
+    env_file:
+      - .env.prod
