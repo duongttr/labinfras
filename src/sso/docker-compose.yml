@@ -1,0 +1,23 @@
+version: '3.8'
+# define networks
+networks:
+  custom:
+    name: custom
+# define services
+services:
+  # PostgreSQL as main database
+  pgsql:
+    image: postgres:11.18-alpine
+    container_name: pgsql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=postgres --dbname=postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - custom
+    env_file:
+      - .env.prod
+    volumes:
+      - ./pgsql/data:/var/postgresql/data
