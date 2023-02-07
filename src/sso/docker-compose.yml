@@ -21,16 +21,22 @@ services:
       - .env.prod
     volumes:
       - ./pgsql/data:/var/postgresql/data
-      - ./pgsql/initdb.d:/var/docker-entrypoint-initdb.d
+      - ./pgsql/initdb.d:/docker-entrypoint-initdb.d/
   # Keycloack as single-sign on
   keycloak:
     image: bitnami/keycloak
     container_name: keycloak
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - custom
     depends_on:
-      - pgsql
+      pgsql:
+        condition: service_healthy
     links:
       - pgsql:postgresql
     env_file:
