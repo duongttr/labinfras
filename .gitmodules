@@ -1,0 +1,3 @@
+[submodule "src/sso/ssl"]
+	path = src/sso/ssl
+	url = https://github.com/gradlabs/ssl
