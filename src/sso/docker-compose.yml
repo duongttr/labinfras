@@ -21,6 +21,7 @@ services:
       - .env.prod
     volumes:
       - ./pgsql/data:/var/postgresql/data
+      - ./pgsql/initdb.d:/var/docker-entrypoint-initdb.d
   # Keycloack as single-sign on
   keycloak:
     image: bitnami/keycloak
