@@ -20,13 +20,14 @@ services:
     env_file:
       - .env.prod
     volumes:
-      - ./pgsql/data:/var/postgresql/data
+      - ./pgsql/data:/var/lib/postgresql/data
       - ./pgsql/initdb.d:/docker-entrypoint-initdb.d/
   # Keycloack as single-sign on
   keycloak:
-    image: bitnami/keycloak
+    image: hieupth/keycloak:20.0.3-postgres
     container_name: keycloak
     restart: unless-stopped
+    command: start --optimized
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 10s
@@ -38,9 +39,11 @@ services:
       pgsql:
         condition: service_healthy
     links:
-      - pgsql:postgresql
+      - pgsql:pgsql
     env_file:
       - .env.prod
+    volumes:
+      - ./ssl/certs:/opt/keycloak/conf/certs
   # Nginx as reserved proxy
   nginx:
     image: hieupth/nginx
